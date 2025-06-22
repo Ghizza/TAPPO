@@ -1,7 +1,7 @@
 # TAPPO
 ### Tool per Alleggerire PDF Pesanti Offline 
 
-TAPPO è un semplicissimo compressore di file PDF scritto in Python con un'interfaccia grafica.  
+TAPPO è un semplice compressore di file PDF scritto in Python con un'interfaccia grafica.  
 
 ## 🛠️ Requisiti
 
@@ -58,7 +58,7 @@ Per verificare:
 gs --version
 ```
 
-Se Ghostscript non è disponibile nei repository o vuoi una versione più recente, puoi anche installarlo dai sorgenti ufficiali: [https://ghostscript.com/releases/](https://ghostscript.com/releases/)
+Se Ghostscript non è disponibile nei repository, è possibile scaricare il pacchetto Snap: [https://ghostscript.com/releases/gsdnld.html](https://ghostscript.com/releases/gsdnld.html)
 
 ---
 
