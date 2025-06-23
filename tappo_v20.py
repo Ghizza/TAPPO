@@ -6,6 +6,7 @@ import platform
 import shutil
 import subprocess
 import webbrowser
+import threading
 from tkinter import filedialog, messagebox
 
 APP_COLORS = {
@@ -16,8 +17,8 @@ APP_COLORS = {
     "text_medium": "#cccccc",
     "text_light": "#d9d9d9",
     "border": "#666666",
-    "link_01": "#0076d6", # 0076d6 IBM Blue
-    "link_02": "#76b900", # 44d62c Razer Green # 76b900 NVIDIA
+    "link_01": "#367bf0", # 367bf0 Kali Linux | 0672CB Dell | 0076d6 IBM Blue | 1793d1 Arch Linux
+    "link_02": "#76b900", # 44d62c Razer Green | 76b900 NVIDIA | FEA44C Kali Linux Orange
 }
 
 APP_FONTS = {
@@ -60,7 +61,7 @@ COMPONENT_STYLES = {
         "hover_color": APP_COLORS["hover"],
         "text_color": APP_COLORS["text"], 
         "corner_radius": 5,
-        "font": (APP_FONTS["family"], APP_FONTS["size_normal"], "bold"), 
+        "font": (APP_FONTS["family"], APP_FONTS["size_medium"], "bold"), 
         "border_width": 1, 
         "border_color": APP_COLORS["border"],
         "width": 150
@@ -71,7 +72,7 @@ COMPONENT_STYLES = {
         "hover_color": APP_COLORS["hover"],
         "text_color": APP_COLORS["link_02"], 
         "corner_radius": 5,
-        "font": (APP_FONTS["family"], APP_FONTS["size_normal"], "bold"), 
+        "font": (APP_FONTS["family"], APP_FONTS["size_large"], "bold"), 
         "border_width": 1, 
         "border_color": APP_COLORS["link_02"],
         "height": 36, 
@@ -110,6 +111,7 @@ COMPONENT_STYLES = {
         "font": (APP_FONTS["family"], 13),
         "fg_color": APP_COLORS["dark"], 
         "text_color": APP_COLORS["text_medium"],
+        "border_spacing": 10,
         "corner_radius": 5, 
         "wrap": "word"
     }
@@ -156,6 +158,62 @@ def format_file_size(bytes_size):
         bytes_size /= 1024.0
     return f"{bytes_size:.2f} TB"
 
+class LoadingDialog:
+    def __init__(self, parent):
+        self.dialog = ctk.CTkToplevel(parent)
+        self.dialog.title("")
+        self.dialog.geometry("350x80")
+        self.dialog.resizable(False, False)
+        self.dialog.configure(fg_color=APP_COLORS["background"])
+        self.dialog.transient(parent)
+        self.dialog.grab_set()
+        
+        # Centra la finestra
+        self.dialog.update_idletasks()
+        x = parent.winfo_x() + (parent.winfo_width() // 2) - 175
+        y = parent.winfo_y() + (parent.winfo_height() // 2) - 40
+        self.dialog.geometry(f"350x80+{x}+{y}")
+        
+        # Label animata
+        self.label = ctk.CTkLabel(
+            self.dialog, 
+            text="- Compressione in corso -",
+            font=(APP_FONTS["family"], APP_FONTS["size_medium"], "bold"),
+            text_color=APP_COLORS["text_light"]
+        )
+        self.label.pack(expand=True)
+        
+        self.running = True
+        self.animation_step = 0
+        self.animate_text()
+    
+    def animate_text(self):
+        if not self.running:
+            return
+        
+        # Sequenza di animazione
+        animations = [
+        "[     Compressione in corso     ]",
+        "|[    Compressione in corso    ]|",
+        "||[   Compressione in corso   ]||",
+        "|||[  Compressione in corso  ]|||",
+        "||||[ Compressione in corso ]||||",
+        "|||[  Compressione in corso  ]|||",
+        "||[   Compressione in corso   ]||",
+        "|[    Compressione in corso    ]|",
+        ]
+        
+        self.label.configure(text=animations[self.animation_step])
+        self.animation_step = (self.animation_step + 1) % len(animations)
+        
+        self.dialog.after(300, self.animate_text)
+    
+    def close(self):
+        self.running = False
+        if self.dialog.winfo_exists():
+            self.dialog.grab_release()
+            self.dialog.destroy()
+
 class TappoApp(ctk.CTk):
     def __init__(self):
         super().__init__()
@@ -164,7 +222,13 @@ class TappoApp(ctk.CTk):
         self.resizable(False, False)
         center_window_on_screen(self, 750, 320)
 
-        self.gs_path = ctk.StringVar(value=find_ghostscript() or "")
+        # Inizializza il percorso di Ghostscript con il messaggio appropriato
+        gs_found = find_ghostscript()
+        if gs_found:
+            self.gs_path = ctk.StringVar(value=gs_found)
+        else:
+            self.gs_path = ctk.StringVar(value="Ghostscript non trovato -> Leggi la GUIDA qui sotto!")
+        
         self.input_path = ctk.StringVar()
         self.output_path = ctk.StringVar()
         self.compression = ctk.StringVar(value="Alta qualità (/printer) - File di medie dimensioni")
@@ -365,7 +429,7 @@ Ringraziamenti:
         input_pdf = self.input_path.get().strip()
         output_pdf = self.output_path.get().strip()
 
-        if not gs:
+        if not gs or gs == "Ghostscript non trovato -> Leggi la GUIDA qui sotto!":
             raise ValueError("Seleziona il percorso di Ghostscript.")
         if not os.path.exists(gs):
             raise ValueError("Ghostscript non trovato nel percorso specificato.")
@@ -452,45 +516,75 @@ Ringraziamenti:
 
         messagebox.showinfo("File compresso!", success_message)
 
-    def compress_pdf(self):
+    def compress_pdf_worker(self, gs_path, input_pdf, output_pdf, quality, original_size, loading_dialog):
+        """Worker thread per la compressione"""
         try:
-            gs_path, input_pdf, output_pdf = self.validate_inputs()
-            quality = COMPRESSION_LEVELS.get(self.compression.get(), "/printer")
-            
-            original_size = os.path.getsize(input_pdf)
-            
             command = self.build_compression_command(gs_path, input_pdf, output_pdf, quality)
-
+            
             result = subprocess.run(
                 command, check=True, capture_output=True, 
                 text=True, timeout=300
             )
-
+            
             compressed_size = self.validate_compression_result(output_pdf)
             
-            self.show_compression_result(input_pdf, output_pdf, original_size, compressed_size)
-
-        except ValueError as e:
-            messagebox.showerror("Errore", str(e))
-        except subprocess.TimeoutExpired:
+            # Chiudi il dialog e mostra il risultato nel thread principale
+            self.after(0, lambda: self.compression_completed(
+                loading_dialog, input_pdf, output_pdf, original_size, compressed_size
+            ))
+            
+        except Exception as e:
+            # Chiudi il dialog e mostra l'errore nel thread principale
+            self.after(0, lambda: self.compression_error(loading_dialog, e))
+    
+    def compression_completed(self, loading_dialog, input_pdf, output_pdf, original_size, compressed_size):
+        """Chiamato quando la compressione è completata"""
+        loading_dialog.close()
+        self.show_compression_result(input_pdf, output_pdf, original_size, compressed_size)
+    
+    def compression_error(self, loading_dialog, error):
+        """Chiamato quando si verifica un errore"""
+        loading_dialog.close()
+        
+        if isinstance(error, subprocess.TimeoutExpired):
             messagebox.showerror("Errore", 
                 "Timeout: la compressione sta richiedendo troppo tempo.\n"
                 "Prova con un file più piccolo o un livello di compressione diverso.")
-        except subprocess.CalledProcessError as e:
-            error_msg = f"Errore nella compressione del PDF.\nCodice di errore: {e.returncode}"
-            if e.stderr:
-                error_msg += f"\nDettagli: {e.stderr.strip()}"
+        elif isinstance(error, subprocess.CalledProcessError):
+            error_msg = f"Errore nella compressione del PDF.\nCodice di errore: {error.returncode}"
+            if error.stderr:
+                error_msg += f"\nDettagli: {error.stderr.strip()}"
             messagebox.showerror("Errore", error_msg)
-        except RuntimeError as e:
-            messagebox.showerror("Errore", str(e))
-        except PermissionError:
+        elif isinstance(error, (RuntimeError, ValueError)):
+            messagebox.showerror("Errore", str(error))
+        elif isinstance(error, PermissionError):
             messagebox.showerror("Errore", "Permessi insufficienti per salvare il file.")
-        except FileNotFoundError as e:
-            messagebox.showerror("Errore", f"File non trovato: {e}")
-        except OSError as e:
-            messagebox.showerror("Errore", f"Errore del sistema operativo: {e}")
-        except Exception as e:
-            messagebox.showerror("Errore", f"Errore imprevisto: {e}")
+        elif isinstance(error, FileNotFoundError):
+            messagebox.showerror("Errore", f"File non trovato: {error}")
+        elif isinstance(error, OSError):
+            messagebox.showerror("Errore", f"Errore del sistema operativo: {error}")
+        else:
+            messagebox.showerror("Errore", f"Errore imprevisto: {error}")
+
+    def compress_pdf(self):
+        try:
+            gs_path, input_pdf, output_pdf = self.validate_inputs()
+            quality = COMPRESSION_LEVELS.get(self.compression.get(), "/printer")
+            original_size = os.path.getsize(input_pdf)
+            
+            # Mostra il dialog di caricamento
+            loading_dialog = LoadingDialog(self)
+            
+            # Avvia la compressione in un thread separato
+            thread = threading.Thread(
+                target=self.compress_pdf_worker,
+                args=(gs_path, input_pdf, output_pdf, quality, original_size, loading_dialog),
+                daemon=True
+            )
+            thread.start()
+            
+        except ValueError as e:
+            messagebox.showerror("Errore", str(e))
 
 if __name__ == "__main__":
     app = TappoApp()

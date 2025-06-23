@@ -1,0 +1,10 @@
+# Build files
+build/
+dist/
+
+# Virtual environment
+tappo_env/
+
+# Python cache
+__pycache__/
+*.pyc
