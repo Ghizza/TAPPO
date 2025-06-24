@@ -22,7 +22,7 @@ Per verificare che l'installazione sia avvenuta correttamente, apri il prompt de
 gs --version
 ```
 
-Dovresti vedere un numero di versione come risposta (es. `10.02.1`).
+Dovresti vedere un numero di versione come risposta (es. `10.02.1`).  
 In caso di errore, assicurati che l'opzione per aggiungere Ghostscript al PATH di sistema sia selezionata.
 
 ### Linux
