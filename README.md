@@ -3,7 +3,7 @@
 
 TAPPO è un semplice compressore di file PDF scritto in Python con un'interfaccia grafica.  
 
-## 🛠️ Requisiti
+## Requisiti
 
 Questa applicazione richiede l'installazione di **Ghostscript** sul sistema operativo dell'utente.  
 Ghostscript è un interprete per i formati PostScript (PS) e PDF.
