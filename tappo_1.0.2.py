@@ -128,6 +128,16 @@ COMPRESSION_LEVELS = {
     "Altissima qualità (/prepress) - File più pesante": "/prepress"
 }
 
+def get_resource_path(relative_path):
+    """Ottiene il percorso corretto per le risorse, sia in sviluppo che compilato"""
+    try:
+        # PyInstaller crea una cartella temporanea e memorizza il percorso in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+    
+    return os.path.join(base_path, relative_path)
+
 def find_ghostscript():
     system = platform.system()
     if system == "Windows":
@@ -171,6 +181,14 @@ class LoadingDialog:
         self.dialog.configure(fg_color=APP_COLORS["background"])
         self.dialog.transient(parent)
         self.dialog.grab_set()
+        
+        # Imposta l'icona anche per il dialog se possibile
+        try:
+            icon_path = get_resource_path("tappo_icon.ico")
+            if os.path.exists(icon_path):
+                self.dialog.iconbitmap(icon_path)
+        except:
+            pass  # Ignora errori dell'icona per il dialog
         
         # Centra la finestra
         self.dialog.update_idletasks()
@@ -221,7 +239,10 @@ class LoadingDialog:
 class TappoApp(ctk.CTk):
     def __init__(self):
         super().__init__()
-        self.iconbitmap("tappo_icon.ico")
+        
+        # Imposta l'icona della finestra
+        self.set_window_icon()
+        
         self.title("TAPPO - Tool per Alleggerire PDF Pesanti Offline")
         self.configure(fg_color=APP_COLORS["background"])
         self.resizable(False, False)
@@ -256,6 +277,26 @@ class TappoApp(ctk.CTk):
         self.build_credits_screen_ui()
 
         self.show_frame(self.main_content_frame)
+
+    def set_window_icon(self):
+        """Imposta l'icona della finestra in modo sicuro"""
+        try:
+            icon_path = get_resource_path("tappo_icon.ico")
+            if os.path.exists(icon_path):
+                self.iconbitmap(icon_path)
+            else:
+                print(f"Icon file not found at: {icon_path}")
+        except Exception as e:
+            print(f"Could not set window icon: {e}")
+            # Su Linux, prova un approccio alternativo se disponibile
+            if platform.system() == "Linux":
+                try:
+                    # Metodo alternativo per Linux usando wm_iconbitmap
+                    icon_path = get_resource_path("tappo_icon.ico")
+                    if os.path.exists(icon_path):
+                        self.wm_iconbitmap(icon_path)
+                except:
+                    pass  # Ignora se non funziona
 
     def show_frame(self, frame_to_show):
         for frame in [self.main_content_frame, self.guide_screen_frame, self.credits_screen_frame]:
