@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# MIT License
+# Copyright (c) 2025 [Il tuo nome]
+# See LICENSE file in the root directory for full license text.
 
 import customtkinter as ctk
 import os
@@ -300,7 +303,7 @@ class TappoApp(ctk.CTk):
     def build_guide_screen_ui(self):
         ctk.CTkLabel(self.guide_screen_frame, text="Come usare TAPPO", **COMPONENT_STYLES['title']).pack(pady=(0, 10))
 
-        guide_content = """───── INSTALLAZIONE GHOSTSCRIPT ─────
+        guide_content = """——— INSTALLAZIONE GHOSTSCRIPT ———
 
 Questa applicazione richiede l'installazione di Ghostscript sul sistema operativo dell'utente.
 Ghostscript è un interprete per i formati PostScript (PS) e PDF, disponibile sotto licenza AGPL.
@@ -313,7 +316,7 @@ Ghostscript è un interprete per i formati PostScript (PS) e PDF, disponibile so
     - Arch Linux: sudo pacman -S ghostscript
     - Fedora: sudo dnf install ghostscript
 
-───── COME USARE TAPPO ─────
+——— COME USARE TAPPO ———
 
 • Seleziona il percorso di Ghostscript (se non rilevato automaticamente)
 • Scegli il file PDF da comprimere
@@ -321,14 +324,14 @@ Ghostscript è un interprete per i formati PostScript (PS) e PDF, disponibile so
 • Seleziona il livello di compressione desiderato
 • Clicca su "Comprimi PDF"
 
-───── LIVELLI DI COMPRESSIONE ─────
+——— LIVELLI DI COMPRESSIONE ———
 
 • Bassa qualità: Massima compressione, qualità ridotta
 • Media qualità: Buon compromesso per lettura digitale
 • Alta qualità: Buona qualità per stampa normale
 • Altissima qualità: Qualità professionale per stampa
 
-───── NOTE ─────
+——— NOTE ———
 
 • I tempi di elaborazione dipendono dalla dimensione del file
 • Il file originale non viene modificato
@@ -350,7 +353,7 @@ Ghostscript è un interprete per i formati PostScript (PS) e PDF, disponibile so
     def build_credits_screen_ui(self):
         ctk.CTkLabel(self.credits_screen_frame, text="TAPPO - Tool per Alleggerire PDF Pesanti Offline", **COMPONENT_STYLES['title']).pack(pady=(0, 10))
 
-        credits_content = """• Versione: 1.0
+        credits_content = """• Versione: 1.0.1
 • Creato da: Ghizza
 • Licenza: MIT License
 • Tecnologie: Python, CustomTkinter, Ghostscript

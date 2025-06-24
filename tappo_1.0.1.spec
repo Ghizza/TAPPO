@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['tappo_v20.py'],
+    ['tappo_1.0.1.py'],
     pathex=[],
     binaries=[],
     datas=[],
@@ -22,7 +22,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='tappo_v20',
+    name='tappo_1.0.1',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -35,5 +35,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['tappo_icona.ico'],
+    icon=['tappo_icon.ico'],
 )
