@@ -1,3 +1,4 @@
+
 # TAPPO
 
 ### Tool per Alleggerire PDF Pesanti Offline | Trim And Pack PDFs Offline
@@ -12,8 +13,7 @@ TAPPO è un semplice compressore di file PDF scritto in Python con un'interfacci
 
 ### Requisiti
 
-Questa applicazione richiede l'installazione di **Ghostscript** sul sistema operativo dell'utente.
-
+Questa applicazione richiede l'installazione di **Ghostscript** sul sistema operativo dell'utente.  
 Ghostscript è un interprete per i formati PostScript (PS) e PDF.
 
 ### Installazione di Ghostscript
@@ -30,8 +30,7 @@ Per verificare che l'installazione sia avvenuta correttamente, apri il prompt de
 gs --version
 ```
 
-Dovresti vedere un numero di versione come risposta (es. `10.02.1`).
-
+Dovresti vedere un numero di versione come risposta (es. `10.02.1`).  
 In caso di errore, assicurati che l'opzione per aggiungere Ghostscript al PATH di sistema sia selezionata.
 
 #### Linux
@@ -85,8 +84,7 @@ TAPPO is a simple PDF file compressor written in Python with a graphical interfa
 
 ### Requirements
 
-This application requires **Ghostscript** to be installed on the user's operating system.
-
+This application requires **Ghostscript** to be installed on the user's operating system.  
 Ghostscript is an interpreter for PostScript (PS) and PDF formats.
 
 ### Ghostscript Installation
@@ -103,8 +101,7 @@ To verify that the installation was successful, open the command prompt and type
 gs --version
 ```
 
-You should see a version number as response (e.g., `10.02.1`).
-
+You should see a version number as response (e.g., `10.02.1`).  
 In case of error, make sure the option to add Ghostscript to the system PATH is selected.
 
 #### Linux
