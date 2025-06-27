@@ -22,7 +22,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='tappo_1.0.2',
+    name='TAPPO',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

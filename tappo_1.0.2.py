@@ -22,7 +22,7 @@ APP_COLORS = {
     "text_light": "#d9d9d9",
     "border": "#666666",
     "link_01": "#367bf0", # 367bf0 Kali Linux | 0672CB Dell | 0076d6 IBM Blue | 1793d1 Arch Linux
-    "link_02": "#76b900", # 44d62c Razer Green | 76b900 NVIDIA | FEA44C Kali Linux Orange
+    "link_02": "#ffbb11", # 44d62c Razer Green | 76b900 NVIDIA | FEA44C Kali Linux Orange
 }
 
 APP_FONTS = {
