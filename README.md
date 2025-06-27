@@ -3,7 +3,7 @@
 
 ### Tool per Alleggerire PDF Pesanti Offline | Trim And Pack PDFs Offline
 
-**[Italiano](#italiano) | [English](#english)**
+**[Italiano](#italiano)** | **[English](#english)**
 
 ---
 
