@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['tappo_1.0.2.py'],
+    ['tappo_1.1.0.py'],
     pathex=[],
     binaries=[],
     datas=[('tappo_icon.ico', '.')],

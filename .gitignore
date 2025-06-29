@@ -8,3 +8,4 @@ tappo_env/
 __pycache__/
 *.pyc
 tappo.spec
+TAPPO.spec
