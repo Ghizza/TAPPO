@@ -11,7 +11,11 @@ import shutil
 import subprocess
 import webbrowser
 import threading
-from tkinter import filedialog, messagebox
+from tkinter import filedialog, messagebox, PhotoImage
+
+# Import Windows-specific libs
+if platform.system() == "Windows":
+    import ctypes
 
 APP_COLORS = {
     "background": "#262626",
@@ -231,7 +235,21 @@ class LoadingDialog:
 class TappoApp(ctk.CTk):
     def __init__(self):
         super().__init__()
-        
+
+        # --- Imposta icona per barra titolo e taskbar ---
+        system = platform.system()
+        try:
+            if system == "Windows":
+                icon_path = get_resource_path("tappo_icon.ico")
+                self.iconbitmap(default=icon_path)
+                ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(u"TAPPO")
+            else:
+                icon_path = get_resource_path("tappo_icon.png")
+                icon_image = PhotoImage(file=icon_path)
+                self.iconphoto(True, icon_image)
+        except Exception as e:
+            print(f"[WARNING] Impossibile impostare l'icona: {e}")
+
         self.title("TAPPO - Tool per Alleggerire PDF Pesanti Offline")
         self.configure(fg_color=APP_COLORS["background"])
         self.resizable(False, False)
