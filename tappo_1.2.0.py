@@ -1,8 +1,4 @@
 #!/usr/bin/env python3
-# MIT License
-# Copyright (c) 2025 Ghizza
-# See LICENSE file in the root directory for full license text.
-
 import customtkinter as ctk
 import sys
 import os
@@ -11,11 +7,47 @@ import shutil
 import subprocess
 import webbrowser
 import threading
-from tkinter import filedialog, messagebox, PhotoImage
+from tkinter import filedialog, messagebox
 
-# Import Windows-specific libs
 if platform.system() == "Windows":
     import ctypes
+    from ctypes import windll, byref, sizeof, c_int
+
+# ==================== ICON & DPI CONFIGURATION ====================
+def configure_windows_dpi_and_icon(app):
+    """Configura DPI awareness e icona per Windows"""
+    try:
+        # Configurazione DPI avanzata (Full DPI awareness)
+        windll.shcore.SetProcessDpiAwareness(2)
+        windll.user32.SetProcessDPIAware()
+        
+        # Caricamento icona ad alta risoluzione
+        base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+        icon_path = os.path.join(base_path, "tappo_icon.ico")
+        
+        if os.path.exists(icon_path):
+            # Metodo standard per l'icona
+            app.iconbitmap(default=icon_path)
+            
+            # Metodo avanzato per forzare l'icona ad alta risoluzione
+            hwnd = windll.user32.GetParent(app.winfo_id())
+            WM_SETICON = 0x80
+            ICON_BIG = 1
+            LR_LOADFROMFILE = 0x10
+            LR_DEFAULTSIZE = 0x40
+            
+            hicon = windll.user32.LoadImageW(
+                0, icon_path, 1, 0, 0, LR_LOADFROMFILE | LR_DEFAULTSIZE
+            )
+            
+            if hicon:
+                windll.user32.SendMessageW(hwnd, WM_SETICON, ICON_BIG, hicon)
+            
+            # Imposta AppUserModelID per la taskbar
+            windll.shell32.SetCurrentProcessExplicitAppUserModelID('tappo.app.1.1.0')
+            
+    except Exception as e:
+        print(f"[WARNING] Icon/DPI configuration failed: {e}")
 
 APP_COLORS = {
     "background": "#262626",
@@ -25,8 +57,8 @@ APP_COLORS = {
     "text_medium": "#cccccc",
     "text_light": "#d9d9d9",
     "border": "#666666",
-    "link_01": "#367bf0", # 367bf0 Kali Linux | 0672CB Dell | 0076d6 IBM Blue | 1793d1 Arch Linux
-    "link_02": "#ffbb11", # 44d62c Razer Green | 76b900 NVIDIA
+    "link_01": "#367bf0",
+    "link_02": "#ffbb11",
 }
 
 APP_FONTS = {
@@ -39,72 +71,72 @@ APP_FONTS = {
 
 COMPONENT_STYLES = {
     "label": {
-        "font": (APP_FONTS["family"], APP_FONTS["size_normal"], "bold"), 
+        "font": (APP_FONTS["family"], APP_FONTS["size_normal"], "bold"),
         "text_color": APP_COLORS["text"]
     },
     
     "entry": {
-        "width": 350, 
+        "width": 350,
         "font": (APP_FONTS["family"], APP_FONTS["size_normal"]),
-        "fg_color": APP_COLORS["dark"], 
+        "fg_color": APP_COLORS["dark"],
         "text_color": APP_COLORS["text_light"],
-        "border_color": APP_COLORS["border"], 
-        "corner_radius": 5, 
+        "border_color": APP_COLORS["border"],
+        "corner_radius": 5,
         "border_width": 1,
     },
     
     "button_primary": {
-        "fg_color": APP_COLORS["dark"], 
+        "fg_color": APP_COLORS["dark"],
         "hover_color": APP_COLORS["hover"],
-        "text_color": APP_COLORS["link_01"], 
+        "text_color": APP_COLORS["link_01"],
         "corner_radius": 5,
-        "font": (APP_FONTS["family"], APP_FONTS["size_medium"], "bold"), 
-        "border_width": 1, 
+        "font": (APP_FONTS["family"], APP_FONTS["size_medium"], "bold"),
+        "border_width": 1,
         "border_color": APP_COLORS["link_01"],
         "width": 150
     },
     
     "button_secondary": {
-        "fg_color": APP_COLORS["dark"], 
+        "fg_color": APP_COLORS["dark"],
         "hover_color": APP_COLORS["hover"],
-        "text_color": APP_COLORS["text"], 
+        "text_color": APP_COLORS["text"],
         "corner_radius": 5,
-        "font": (APP_FONTS["family"], APP_FONTS["size_medium"], "bold"), 
-        "border_width": 1, 
+        "font": (APP_FONTS["family"], APP_FONTS["size_medium"], "bold"),
+        "border_width": 1,
         "border_color": APP_COLORS["border"],
         "width": 150
     },
     
     "button_compress": {
-        "fg_color": APP_COLORS["dark"], 
+        "fg_color": APP_COLORS["dark"],
         "hover_color": APP_COLORS["hover"],
-        "text_color": APP_COLORS["link_02"], 
+        "text_color": APP_COLORS["link_02"],
         "corner_radius": 5,
-        "font": (APP_FONTS["family"], APP_FONTS["size_large"], "bold"), 
-        "border_width": 1, 
+        "font": (APP_FONTS["family"], APP_FONTS["size_large"], "bold"),
+        "border_width": 1,
         "border_color": APP_COLORS["link_02"],
-        "height": 36, 
+        "height": 36,
         "width": 200
     },
     
     "button_menu": {
-        "fg_color": "transparent", 
+        "fg_color": "transparent",
         "hover_color": APP_COLORS["hover"],
-        "text_color": APP_COLORS["link_01"], 
-        "font": (APP_FONTS["family"], APP_FONTS["size_small"], "bold"), 
+        "text_color": APP_COLORS["link_01"],
+        "font": (APP_FONTS["family"], APP_FONTS["size_small"], "bold"),
         "height": 24
     },
     
     "option_menu": {
         "width": 350,
-        "font": (APP_FONTS["family"], APP_FONTS["size_normal"]), 
-        "fg_color": APP_COLORS["dark"], 
-        "button_color": APP_COLORS["link_01"], 
-        "button_hover_color": APP_COLORS["border"], 
-        "text_color": APP_COLORS["text_light"], 
-        "dropdown_fg_color": APP_COLORS["dark"], 
-        "dropdown_text_color": APP_COLORS["text_light"], 
-        "dropdown_hover_color": APP_COLORS["link_01"], 
+        "font": (APP_FONTS["family"], APP_FONTS["size_normal"]),
+        "fg_color": APP_COLORS["dark"],
+        "button_color": APP_COLORS["link_01"],
+        "button_hover_color": APP_COLORS["border"],
+        "text_color": APP_COLORS["text_light"],
+        "dropdown_fg_color": APP_COLORS["dark"],
+        "dropdown_text_color": APP_COLORS["text_light"],
+        "dropdown_hover_color": APP_COLORS["link_01"],
         "corner_radius": 5
     },
     
@@ -114,13 +146,13 @@ COMPONENT_STYLES = {
     },
     
     "textbox": {
-        "width": 690, 
+        "width": 690,
         "height": 170,
         "font": (APP_FONTS["family"], 13),
-        "fg_color": APP_COLORS["dark"], 
+        "fg_color": APP_COLORS["dark"],
         "text_color": APP_COLORS["text_medium"],
         "border_spacing": 10,
-        "corner_radius": 5, 
+        "corner_radius": 5,
         "wrap": "word"
     }
 }
@@ -131,16 +163,6 @@ COMPRESSION_LEVELS = {
     "Alta qualità (/printer) - File di medie dimensioni": "/printer",
     "Altissima qualità (/prepress) - File più pesante": "/prepress"
 }
-
-def get_resource_path(relative_path):
-    """Ottiene il percorso corretto per le risorse, sia in sviluppo che compilato"""
-    try:
-        # PyInstaller crea una cartella temporanea e memorizza il percorso in _MEIPASS
-        base_path = sys._MEIPASS
-    except Exception:
-        base_path = os.path.abspath(".")
-    
-    return os.path.join(base_path, relative_path)
 
 def find_ghostscript():
     system = platform.system()
@@ -186,13 +208,11 @@ class LoadingDialog:
         self.dialog.transient(parent)
         self.dialog.grab_set()
         
-        # Centra la finestra
         self.dialog.update_idletasks()
         x = parent.winfo_x() + (parent.winfo_width() // 2) - 175
         y = parent.winfo_y() + (parent.winfo_height() // 2) - 40
         self.dialog.geometry(f"350x80+{x}+{y}")
         
-        # Label animata
         self.label = ctk.CTkLabel(
             self.dialog, 
             text="- Compressione in corso -",
@@ -209,7 +229,6 @@ class LoadingDialog:
         if not self.running:
             return
         
-        # Sequenza di animazione
         animations = [
         "[     Compressione in corso     ]",
         "|[    Compressione in corso    ]|",
@@ -236,26 +255,16 @@ class TappoApp(ctk.CTk):
     def __init__(self):
         super().__init__()
 
-        # --- Imposta icona per barra titolo e taskbar ---
-        system = platform.system()
-        try:
-            if system == "Windows":
-                icon_path = get_resource_path("tappo_icon.ico")
-                self.iconbitmap(default=icon_path)
-                ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(u"TAPPO")
-            else:
-                icon_path = get_resource_path("tappo_icon.png")
-                icon_image = PhotoImage(file=icon_path)
-                self.iconphoto(True, icon_image)
-        except Exception as e:
-            print(f"[WARNING] Impossibile impostare l'icona: {e}")
+        # Configura DPI e icona solo su Windows
+        if platform.system() == "Windows":
+            configure_windows_dpi_and_icon(self)
 
+        # Il resto del tuo __init__ rimane uguale
         self.title("TAPPO - Tool per Alleggerire PDF Pesanti Offline")
         self.configure(fg_color=APP_COLORS["background"])
         self.resizable(False, False)
         center_window_on_screen(self, 750, 320)
 
-        # Inizializza il percorso di Ghostscript con il messaggio appropriato
         gs_found = find_ghostscript()
         if gs_found:
             self.gs_path = ctk.StringVar(value=gs_found)
@@ -289,7 +298,7 @@ class TappoApp(ctk.CTk):
         for frame in [self.main_content_frame, self.guide_screen_frame, self.credits_screen_frame]:
             frame.grid_forget()
 
-        frame_to_show.grid(row=0, column=0, sticky="nsew") 
+        frame_to_show.grid(row=0, column=0, sticky="nsew")
         frame_to_show.grid_columnconfigure(1, weight=1)
 
     def add_input_row(self, parent_frame, row, label_text, variable, browse_command=None):
@@ -300,7 +309,7 @@ class TappoApp(ctk.CTk):
             row=row, column=1, sticky="", padx=0, pady=10
         )
         if browse_command:
-            ctk.CTkButton(parent_frame, text="Sfoglia", command=browse_command, 
+            ctk.CTkButton(parent_frame, text="Sfoglia", command=browse_command,
                          **COMPONENT_STYLES['button_primary']).grid(row=row, column=2, padx=(15, 0), pady=10)
 
     def build_main_content_ui(self):
@@ -313,16 +322,16 @@ class TappoApp(ctk.CTk):
         )
 
         ctk.CTkOptionMenu(
-            self.main_content_frame, variable=self.compression, values=list(COMPRESSION_LEVELS.keys()), 
+            self.main_content_frame, variable=self.compression, values=list(COMPRESSION_LEVELS.keys()),
             **COMPONENT_STYLES['option_menu']
         ).grid(row=3, column=1, sticky="", padx=0, pady=(10, 10))
 
         side_menu_frame = ctk.CTkFrame(self.main_content_frame, fg_color="transparent")
         side_menu_frame.grid(row=3, column=2, padx=(15, 0), pady=(10, 10))
 
-        ctk.CTkButton(side_menu_frame, text="GUIDA", command=lambda: self.show_frame(self.guide_screen_frame), 
+        ctk.CTkButton(side_menu_frame, text="GUIDA", command=lambda: self.show_frame(self.guide_screen_frame),
                      width=40, **COMPONENT_STYLES['button_menu']).pack(side="left", padx=(0, 5))
-        ctk.CTkButton(side_menu_frame, text="CREDITS", command=lambda: self.show_frame(self.credits_screen_frame), 
+        ctk.CTkButton(side_menu_frame, text="CREDITS", command=lambda: self.show_frame(self.credits_screen_frame),
                      width=50, **COMPONENT_STYLES['button_menu']).pack(side="left")
 
         ctk.CTkButton(
@@ -550,7 +559,6 @@ Ringraziamenti:
         messagebox.showinfo("File compresso!", success_message)
 
     def compress_pdf_worker(self, gs_path, input_pdf, output_pdf, quality, original_size, loading_dialog):
-        """Worker thread per la compressione"""
         try:
             command = self.build_compression_command(gs_path, input_pdf, output_pdf, quality)
             
@@ -561,22 +569,18 @@ Ringraziamenti:
             
             compressed_size = self.validate_compression_result(output_pdf)
             
-            # Chiudi il dialog e mostra il risultato nel thread principale
             self.after(0, lambda: self.compression_completed(
                 loading_dialog, input_pdf, output_pdf, original_size, compressed_size
             ))
             
         except Exception as e:
-            # Chiudi il dialog e mostra l'errore nel thread principale
             self.after(0, lambda: self.compression_error(loading_dialog, e))
     
     def compression_completed(self, loading_dialog, input_pdf, output_pdf, original_size, compressed_size):
-        """Chiamato quando la compressione è completata"""
         loading_dialog.close()
         self.show_compression_result(input_pdf, output_pdf, original_size, compressed_size)
     
     def compression_error(self, loading_dialog, error):
-        """Chiamato quando si verifica un errore"""
         loading_dialog.close()
         
         if isinstance(error, subprocess.TimeoutExpired):
@@ -605,10 +609,8 @@ Ringraziamenti:
             quality = COMPRESSION_LEVELS.get(self.compression.get(), "/printer")
             original_size = os.path.getsize(input_pdf)
             
-            # Mostra il dialog di caricamento
             loading_dialog = LoadingDialog(self)
             
-            # Avvia la compressione in un thread separato
             thread = threading.Thread(
                 target=self.compress_pdf_worker,
                 args=(gs_path, input_pdf, output_pdf, quality, original_size, loading_dialog),
