@@ -23,8 +23,8 @@ Thank you for your interest in contributing to this project! Every contribution 
 
 ### How to contribute
 
-- Issues: Open a new issue for technical questions or public discussions
-- GitHub: Contact me through my profile @ghizza
-- Check the existing documentation
+- Issues: Open a [new issue](https://github.com/Ghizza/TAPPO/issues/new) for technical questions or public discussions
+- GitHub: Contact me through my profile [@ghizza](https://github.com/ghizza)
+- Check the existing [documentation](README.md)
 - For bugs, always include: version, operating system, and steps to reproduce the issue
 
