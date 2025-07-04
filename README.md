@@ -69,6 +69,10 @@ Se Ghostscript non è disponibile nei repository, è possibile scaricare il pacc
 pip install -r requirements.txt
 ```
 
+### Problemi noti
+
+- Corretta assegnazione dell'[icona .png nell'AppImage](https://github.com/Ghizza/TAPPO/issues/2)
+
 ### Contributi
 
 Contributi benvenuti! Vedi [CONTRIBUTING.md](./CONTRIBUTING.md) per le linee guida.
@@ -140,6 +144,10 @@ If Ghostscript is not available in the repositories, you can download the Snap p
 ```bash
 pip install -r requirements.txt
 ```
+
+## Known Issues
+
+- Correct assignment of the [].png icon](https://github.com/Ghizza/TAPPO/issues/2) in the AppImage
 
 ## Contributing
 
