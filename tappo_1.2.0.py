@@ -7,7 +7,7 @@ import shutil
 import subprocess
 import webbrowser
 import threading
-from tkinter import filedialog, messagebox
+from tkinter import filedialog, messagebox, PhotoImage
 
 if platform.system() == "Windows":
     import ctypes
@@ -258,6 +258,16 @@ class TappoApp(ctk.CTk):
         # Configura DPI e icona solo su Windows
         if platform.system() == "Windows":
             configure_windows_dpi_and_icon(self)
+        elif platform.system() == "Linux":
+            try:
+                from tkinter import PhotoImage  # Assicurati che sia importato in cima al file
+                base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+                icon_path = os.path.join(base_path, "tappo_icon.png")
+                if os.path.exists(icon_path):
+                    icon_img = PhotoImage(file=icon_path)
+                    self.iconphoto(True, icon_img)
+            except Exception as e:
+                print(f"[WARNING] Impossibile impostare l'icona su Linux: {e}")
 
         # Il resto del tuo __init__ rimane uguale
         self.title("TAPPO - Tool per Alleggerire PDF Pesanti Offline")
