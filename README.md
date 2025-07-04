@@ -49,11 +49,6 @@ sudo pacman -S ghostscript
 sudo zypper install ghostscript
 ```
 
-Per verificare:
-```bash
-gs --version
-```
-
 Se Ghostscript non è disponibile nei repository, è possibile scaricare il pacchetto Snap: [https://ghostscript.com/releases/gsdnld.html](https://ghostscript.com/releases/gsdnld.html)
 
 #### Requisiti Python
@@ -116,11 +111,6 @@ sudo pacman -S ghostscript
 ##### openSUSE
 ```bash
 sudo zypper install ghostscript
-```
-
-To verify:
-```bash
-gs --version
 ```
 
 If Ghostscript is not available in the repositories, you can download the Snap package: [https://ghostscript.com/releases/gsdnld.html](https://ghostscript.com/releases/gsdnld.html)
