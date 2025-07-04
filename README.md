@@ -7,6 +7,8 @@
 
 ---
 
+## Italiano
+
 TAPPO è un semplice compressore di file PDF scritto in Python con un'interfaccia grafica.
 
 ![Screenshot](screenshots/tappo_1.2.0_screenshot_windows.png)
