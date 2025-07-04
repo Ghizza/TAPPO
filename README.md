@@ -1,5 +1,5 @@
 
-# TAPPO
+# TappO
 
 ### Tool per Alleggerire PDF Pesanti Offline | Trim And Pack PDFs Offline
 
@@ -9,7 +9,7 @@
 
 ## Italiano
 
-TAPPO è un semplice compressore di file PDF scritto in Python con un'interfaccia grafica.
+TappO è un semplice compressore di file PDF scritto in Python con un'interfaccia grafica.
 
 ![Screenshot](screenshots/tappo_1.2.0_screenshot_windows.png)
 
@@ -59,7 +59,7 @@ pip install -r requirements.txt
 
 ### Problemi noti
 
-- Corretta assegnazione dell'[icona .png nell'AppImage](https://github.com/Ghizza/TAPPO/issues/2)
+- Corretta assegnazione dell'[icona .png nell'AppImage](https://github.com/Ghizza/tappo/issues/2)
 
 ### Contributi
 
@@ -73,7 +73,7 @@ Questo progetto è rilasciato sotto licenza MIT. Vedi il file [LICENSE](./LICENS
 
 ## English
 
-TAPPO is a simple PDF file compressor written in Python with a graphical user interface.
+TappO is a simple PDF file compressor written in Python with a graphical user interface.
 
 ![Screenshot](screenshots/tappo_1.2.0_screenshot_windows.png)
 
@@ -123,7 +123,7 @@ pip install -r requirements.txt
 
 ## Known Issues
 
-- Correct assignment of the [.png icon in the AppImage](https://github.com/Ghizza/TAPPO/issues/2)
+- Correct assignment of the [.png icon in the AppImage](https://github.com/Ghizza/tappo/issues/2)
 
 ## Contributing
 
