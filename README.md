@@ -147,7 +147,7 @@ pip install -r requirements.txt
 
 ## Known Issues
 
-- Correct assignment of the [].png icon](https://github.com/Ghizza/TAPPO/issues/2) in the AppImage
+- Correct assignment of the [.png icon in the AppImage](https://github.com/Ghizza/TAPPO/issues/2)
 
 ## Contributing
 
