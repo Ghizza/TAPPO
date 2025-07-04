@@ -30,8 +30,6 @@ Per verificare che l'installazione sia avvenuta correttamente, apri il prompt de
 ```bash
 gs --version
 ```
-Dovresti vedere un numero di versione come risposta (es. `10.02.1`).  
-In caso di errore, assicurati che l'opzione per aggiungere Ghostscript al PATH di sistema sia selezionata.
 
 ##### Linux
 
@@ -106,8 +104,6 @@ To verify the installation was successful, open the command prompt and type:
 ```bash
 gs --version
 ```
-You should see a version number as a response (e.g., `10.02.1`).  
-If you get an error, make sure the option to add Ghostscript to the system PATH is selected.
 
 #### Linux
 
