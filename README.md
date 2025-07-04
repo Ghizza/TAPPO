@@ -74,10 +74,6 @@ Questo progetto è rilasciato sotto licenza MIT. Vedi il file [LICENSE](./LICENS
 
 ---
 
-**Nota:** TAPPO è in fase di sviluppo e diventerà un'applicazione per Windows (.exe) e per Linux (.appimage).
-
----
-
 ## English
 
 TAPPO is a simple PDF file compressor written in Python with a graphical interface.
@@ -142,7 +138,3 @@ If Ghostscript is not available in the repositories, you can download the Snap p
 ### License
 
 This project is released under the MIT license. See the [LICENSE](./LICENSE) file for details.
-
----
-
-**Note:** TAPPO is under development and will become a Windows application (.exe) and Linux application (.appimage).
