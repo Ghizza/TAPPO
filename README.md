@@ -26,11 +26,6 @@ Ghostscript è un interprete per i formati PostScript (PS) e PDF.
 2. Scarica il pacchetto Windows a 64 bit (es: `gs###w64.exe`).
 3. Esegui il programma di installazione e segui le istruzioni.
 
-Per verificare che l'installazione sia avvenuta correttamente, apri il prompt dei comandi e digita:
-```bash
-gs --version
-```
-
 ##### Linux
 
 ###### Debian/Ubuntu (e derivate)
@@ -99,11 +94,6 @@ Ghostscript is an interpreter for PostScript (PS) and PDF formats.
 1. Go to the official Ghostscript website: [https://ghostscript.com/download/gsdnld.html](https://ghostscript.com/download/gsdnld.html)
 2. Download the 64-bit Windows package (e.g., `gs###w64.exe`).
 3. Run the installer and follow the instructions.
-
-To verify the installation was successful, open the command prompt and type:
-```bash
-gs --version
-```
 
 #### Linux
 
