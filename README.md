@@ -1,8 +1,8 @@
-**[Italiano](#italiano)** | **[English](#english)**
+**[🇮🇹 Italiano](#italiano)** | **🇬🇧 [English](#english)**
 
 ## Italiano
 
-🇮🇹 **TAPPO — Tool per Alleggerire Pdf e Png Offline**
+**TAPPO — Tool per Alleggerire Pdf e Png Offline**
 
 **TAPPO** è un'applicazione desktop scritta in Python con interfaccia `tkinter`, progettata per comprimere immagini **PNG** e documenti **PDF** in modo completamente **offline**, sfruttando la massima efficienza di strumenti CLI consolidati nel mondo open source.
 
@@ -57,15 +57,13 @@ Clona o scarica la repository, assicurati di trovarti nella cartella del progett
 
 Questo progetto è distribuito sotto licenza MIT. Gli strumenti esterni utilizzati (`oxipng`, `pngquant`, `Ghostscript`) mantengono le proprie licenze e termini di utilizzo originali.
 
-**[Italiano](#italiano)** | **[English](#english)**
-
 ---
 
-**[Italiano](#italiano)** | **[English](#english)**
+**[🇮🇹 Italiano](#italiano)** | **🇬🇧 [English](#english)**
 
 ## English
 
-🇬🇧 **TAPPO — Offline PDF and PNG Compression Tool**
+**TAPPO — Offline PDF and PNG Compression Tool**
 
 **TAPPO** is a desktop application written in Python using `tkinter`, designed to compress **PNG** images and **PDF** documents completely **offline**, leveraging the performance of battle-tested open-source CLI tools.
 
@@ -119,5 +117,3 @@ Clone or download the repository, navigate to the project directory, and launch 
 ### License
 
 This project is licensed under the MIT License. External tools (`oxipng`, `pngquant`, `Ghostscript`) remain subject to their original respective licenses.
-
-**[Italiano](#italiano)** | **[English](#english)**
