@@ -1,4 +1,5 @@
-<a name="italiano"></a># 🇮🇹 TAPPO
+<a name="italiano"></a>
+# 🇮🇹 TAPPO
 **Tool per Alleggerire Pdf e Png Offline**
 
 **[Italiano](#italiano)** | **[English](#english)**
@@ -57,7 +58,8 @@ Questo progetto è distribuito sotto licenza MIT. Gli strumenti esterni utilizza
 
 ---
 
-<a name="english"></a># 🇬🇧 TAPPO
+<a name="english"></a>
+# 🇬🇧 TAPPO
 **Offline PDF and PNG Compression Tool**
 
 **[Italiano](#italiano)** | **[English](#english)**
