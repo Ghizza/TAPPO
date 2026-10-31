@@ -1,6 +1,6 @@
 # TAPPO 1.2.0 – Legacy
 
-### Tool per Alleggerire PDF Pesanti Offline | Trim And Pack PDFs Offline
+### Tool per Alleggerire PDF Pesanti Offline
 
 **[Italiano](#italiano)** | **[English](#english)**
 
