@@ -25,9 +25,9 @@
 
 TAPPO funge da interfaccia grafica per tre eseguibili esterni che **non sono inclusi** nel repository e mantengono le rispettive licenze:
 
-1. **`oxipng`**: Per la compressione lossless dei PNG (GitHub releases).
-2. **`pngquant`**: Per la compressione lossy dei PNG (pngquant.org).
-3. **`Ghostscript`** (`gswin64c.exe` / `gs`): Per la compressione e rasterizzazione dei PDF (ghostscript.com).
+1. **`oxipng`**: Per la compressione lossless dei PNG ([rustutils.com/tools/oxipng](https://rustutils.com/tools/oxipng/)).
+2. **`pngquant`**: Per la compressione lossy dei PNG ([pngquant.org](https://pngquant.org/)).
+3. **`Ghostscript`** Per la compressione e rasterizzazione dei PDF ([ghostscript.com](https://ghostscript.com/)).
 
 ### Come installarli
 * **Metodo automatico (Consigliato)**: Posiziona l'app, avviala, vai sulla scheda **Strumenti** e clicca su *"Scarica e installa in bin"* per automatizzare il recupero dei file supportati.
