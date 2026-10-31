@@ -88,7 +88,7 @@ This version was subsequently replaced by a complete rewrite of the application,
 
 The original version is preserved for compatibility purposes and to allow existing users to continue using it.
 
-![Screenshot](../tappo_1.2.0_screenshot_windows.png)
+![Screenshot](tappo_1.2.0_screenshot_windows.png)
 
 ### Requirements
 
