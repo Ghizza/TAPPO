@@ -1,6 +1,7 @@
-<a name="italiano"></a>
 # 🇮🇹 TAPPO
 **Tool per Alleggerire Pdf e Png Offline**
+
+<a name="italiano"></a>
 
 **[Italiano](#italiano)** | **[English](#english)**
 
