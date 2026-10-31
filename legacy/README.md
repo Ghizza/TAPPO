@@ -66,10 +66,6 @@ Dalla cartella `legacy`:
 pip install -r requirements.txt
 ```
 
-### Problemi noti
-
-- Corretta assegnazione dell'[icona .png nell'AppImage](https://github.com/Ghizza/TAPPO/issues/2).
-
 ### Contributi
 
 La versione legacy non è più quella principale del progetto. Per informazioni sui contributi, consulta il file [CONTRIBUTING.md](../CONTRIBUTING.md) nella directory principale.
@@ -139,10 +135,6 @@ From the `legacy` directory:
 ```bash
 pip install -r requirements.txt
 ```
-
-### Known Issues
-
-- Correct assignment of the [.png icon in the AppImage](https://github.com/Ghizza/TAPPO/issues/2).
 
 ### Contributing
 
