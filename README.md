@@ -1,6 +1,6 @@
 # TAPPO
 
-**[🇮🇹 Italiano](#italiano)** | **🇬🇧 [English](#english)**
+**🇮🇹 [Italiano](#italiano)** | **🇬🇧 [English](#english)**
 
 ## Italiano
 
@@ -61,7 +61,7 @@ Questo progetto è distribuito sotto licenza MIT. Gli strumenti esterni utilizza
 
 ---
 
-**[🇮🇹 Italiano](#italiano)** | **🇬🇧 [English](#english)**
+**🇮🇹 [Italiano](#italiano)** | **🇬🇧 [English](#english)**
 
 ## English
 
