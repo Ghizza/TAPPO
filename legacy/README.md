@@ -14,7 +14,7 @@ Questa versione è stata successivamente sostituita da una riscrittura completa 
 
 La versione originale viene conservata per motivi di compatibilità e per consentire agli utenti di continuare a utilizzarla.
 
-![Screenshot](../tappo_1.2.0_screenshot_windows.png)
+![Screenshot](screenshot_windows.png)
 
 ### Requisiti
 
