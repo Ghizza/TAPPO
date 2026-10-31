@@ -22,6 +22,8 @@
   - L'app cerca gli eseguibili necessari (`oxipng`, `pngquant`, `ghostscript`) nella cartella locale `./bin`, nel `PATH` di sistema o nei percorsi di installazione predefiniti.
   - **Auto-aggiornamento e Download**: Include una scheda dedicata ("Strumenti") per verificare la presenza di nuove versioni online e scaricare/installare automaticamente i binari mancanti.
 
+<p align="center"><img src="tappo_screenshot_windows.png" width="1204" alt="Tappo su WIndows"></p>
+
 ### Strumenti Esterni Richiesti
 
 TAPPO funge da interfaccia grafica per tre eseguibili esterni che **non sono inclusi** nel repository e mantengono le rispettive licenze:
