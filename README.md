@@ -4,7 +4,6 @@
 
 ## Italiano
 
-<img src="tappo.png" style="float: left; width: 200px; margin-right: 15px; margin-bottom: 10px;" />
 **TAPPO** (Tool per Alleggerire Pdf e Png Offline) è un'applicazione desktop scritta in Python con interfaccia `tkinter`, progettata per comprimere immagini **PNG** e documenti **PDF** in modo completamente **offline**, sfruttando la massima efficienza di strumenti CLI consolidati nel mondo open source.
 
 ### Caratteristiche Principali
