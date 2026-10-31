@@ -69,8 +69,6 @@ Questo progetto è distribuito sotto licenza MIT. Gli strumenti esterni utilizza
 
 **TAPPO** is a desktop application written in Python using `tkinter`, designed to compress **PNG** images and **PDF** documents completely **offline**, leveraging the performance of battle-tested open-source CLI tools.
 
-<p align="center"><img src="tappo.png" width="128" alt="Tappo"></p>
-
 ### Key Features
 
 - **100% Offline & Private**: No files are uploaded to external servers; all processing is executed locally on your machine.
