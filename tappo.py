@@ -1322,7 +1322,7 @@ class App(tk.Tk):
         global UI_SCALE
         # tk scaling = pixel per punto; 96 dpi corrisponde a 96/72
         UI_SCALE = max(1.0, float(self.tk.call("tk", "scaling")) * 72.0 / 96.0)
-        self.title(f"{APP_NAME} {APP_VERSION} - {APP_FULL}")
+        self.title(f"{APP_NAME} - {APP_FULL}")
         # dimensione iniziale ESATTA in pixel reali (non scalata); ridimensionabile dopo.
         # Si riduce solo se lo schermo è più piccolo, per non uscire dallo schermo.
         w = min(WINDOW_WIDTH, self.winfo_screenwidth())
