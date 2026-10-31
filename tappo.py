@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-tappo - Tool per Alleggerire Pdf e Png Offline
+TAPPO - Tool per Alleggerire Pdf e Png Offline
 ==============================================
 
 Applicazione tkinter che comprime PNG e PDF usando eseguibili esterni:
@@ -50,7 +50,7 @@ try:  # opzionale
 except Exception:  # noqa
     HAVE_PIL = False
 
-APP_NAME = "tappo"
+APP_NAME = "TAPPO"
 APP_FULL = "Tool per Alleggerire Pdf e Png Offline"
 APP_VERSION = "1.1.0"
 
@@ -231,9 +231,9 @@ INSTALL_HELP = {
             "2. Estrai  pngquant.exe  nella cartella bin di tappo:\n"
             "   {bin}\n\n"
             "NOTA: l'exe per Windows sul sito ufficiale è la 2.17; la 3.x esiste solo per\n"
-            "Linux e macOS. Su Windows tappo NON confronta pngquant con GitHub: usa la\n"
+            "Linux e macOS. Su Windows TAPPO NON confronta pngquant con GitHub: usa la\n"
             "costante PNGQUANT_WIN_LATEST in cima al file (modificabile a mano), quindi\n"
-            "la 2.17 risulta 'Aggiornata'. Per le funzioni usate da tappo le due versioni\n"
+            "la 2.17 risulta 'Aggiornata'. Per le funzioni usate da TAPPO le due versioni\n"
             "sono equivalenti.\n"
         ),
         "linux": (
@@ -251,7 +251,7 @@ INSTALL_HELP = {
             "WINDOWS\n"
             "1. Scarica l'installer (64 bit) da\n"
             "   https://ghostscript.com/releases/gsdnld.html\n"
-            "2. Installalo: tappo trova da solo gswin64c.exe in\n"
+            "2. Installalo: TAPPO trova da solo gswin64c.exe in\n"
             "   C:\\Program Files\\gs\\...\n"
             "3. In alternativa, per un uso 'portatile', copia nella cartella bin\n"
             "   ({bin})\n"
@@ -677,7 +677,7 @@ def install_ghostscript(log, tmp):
     log("Ghostscript: avvio installer…")
     os.startfile(dest)  # noqa  (installer ufficiale: richiede conferma di Windows)
     return ("Installer di Ghostscript scaricato e avviato: completa l'installazione, "
-            "poi premi 'Ricontrolla aggiornamenti'. tappo lo troverà da solo.")
+            "poi premi 'Ricontrolla aggiornamenti'. TAPPO lo troverà da solo.")
 
 
 INSTALLERS = {"oxipng": install_oxipng, "pngquant": install_pngquant, "ghostscript": install_ghostscript}
@@ -1158,7 +1158,7 @@ class ToolsTab(ttk.Frame):
         self.app = app
 
         ttk.Label(self, text="Programmi esterni necessari", font=app.fonts["large_bold"]).pack(anchor="w")
-        ttk.Label(self, text=f"tappo li cerca nella cartella:  {BIN_DIR}  (poi nel PATH di sistema).\n"
+        ttk.Label(self, text=f"TAPPO li cerca nella cartella:  {BIN_DIR}  (poi nel PATH di sistema).\n"
                              "Ad ogni avvio controlla se esistono versioni più recenti su Internet "
                              "(per il tuo sistema operativo).\n"
                              "Il pulsante «Scarica e installa» scarica da solo gli strumenti mancanti o "
