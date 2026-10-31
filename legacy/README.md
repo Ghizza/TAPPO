@@ -1,4 +1,4 @@
-# TAPPO 1.2.0 – Legacy
+# TAPPO 1.2.0 (Legacy)
 
 ### Tool per Alleggerire PDF Pesanti Offline
 
