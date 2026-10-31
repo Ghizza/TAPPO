@@ -8,10 +8,8 @@
 
 ## Italiano
 
-Questa cartella contiene il codice sorgente della versione originale **TAPPO 1.2.0**, un semplice compressore di file PDF scritto in Python con interfaccia grafica.
-
-Questa versione è stata successivamente sostituita da una riscrittura completa dell'applicazione, che mantiene il nome TAPPO e introduce anche la compressione dei file PNG.
-
+Questa cartella contiene il codice sorgente della versione originale **TAPPO 1.2.0**, un semplice compressore di file PDF scritto in Python con interfaccia grafica.  
+Questa versione è stata successivamente sostituita da una riscrittura completa dell'applicazione, che mantiene il nome TAPPO e introduce anche la compressione dei file PNG.  
 La versione originale viene conservata per motivi di compatibilità e per consentire agli utenti di continuare a utilizzarla.
 
 ![Screenshot](tappo_1.2.0_screenshot_windows.png)
@@ -58,14 +56,6 @@ sudo zypper install ghostscript
 
 Se Ghostscript non è disponibile nei repository, è possibile consultare la pagina ufficiale: [Ghostscript Downloads](https://ghostscript.com/releases/gsdnld.html).
 
-#### Requisiti Python
-
-Dalla cartella `legacy`:
-
-```bash
-pip install -r requirements.txt
-```
-
 ### Contributi
 
 La versione legacy non è più quella principale del progetto. Per informazioni sui contributi, consulta il file [CONTRIBUTING.md](../CONTRIBUTING.md) nella directory principale.
@@ -78,10 +68,8 @@ Questo progetto è rilasciato sotto licenza MIT. Vedi il file [LICENSE](../LICEN
 
 ## English
 
-This folder contains the source code of the original **TAPPO 1.2.0**, a simple PDF file compressor written in Python with a graphical user interface.
-
-This version was subsequently replaced by a complete rewrite of the application, which retains the TAPPO name and also introduces PNG file compression.
-
+This folder contains the source code of the original **TAPPO 1.2.0**, a simple PDF file compressor written in Python with a graphical user interface.  
+This version was subsequently replaced by a complete rewrite of the application, which retains the TAPPO name and also introduces PNG file compression.  
 The original version is preserved for compatibility purposes and to allow existing users to continue using it.
 
 ![Screenshot](tappo_1.2.0_screenshot_windows.png)
@@ -127,14 +115,6 @@ sudo zypper install ghostscript
 ```
 
 If Ghostscript is not available in the repositories, refer to the official page: [Ghostscript Downloads](https://ghostscript.com/releases/gsdnld.html).
-
-### Python Requirements
-
-From the `legacy` directory:
-
-```bash
-pip install -r requirements.txt
-```
 
 ### Contributing
 
