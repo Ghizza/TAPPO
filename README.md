@@ -3,8 +3,6 @@
 
 **TAPPO** è un'applicazione desktop scritta in Python con interfaccia `tkinter`, progettata per comprimere immagini **PNG** e documenti **PDF** in modo completamente **offline**, sfruttando la massima efficienza di strumenti CLI consolidati nel mondo open source.
 
----
-
 ## Caratteristiche Principali
 
 * **100% Offline e Privato**: Nessun file viene caricato su server esterni; l'elaborazione avviene interamente sul tuo computer.
@@ -19,8 +17,6 @@
   * L'app cerca gli eseguibili necessari (`oxipng`, `pngquant`, `ghostscript`) nella cartella locale `./bin`, nel `PATH` di sistema o nei percorsi di installazione predefiniti.
   * **Auto-aggiornamento e Download**: Include una scheda dedicata ("Strumenti") per verificare la presenza di nuove versioni online e scaricare/installare automaticamente i binari mancanti.
 
----
-
 ## Strumenti Esterni Richiesti
 
 TAPPO funge da interfaccia grafica per tre eseguibili esterni che **non sono inclusi** nel repository e mantengono le rispettive licenze:
@@ -33,16 +29,12 @@ TAPPO funge da interfaccia grafica per tre eseguibili esterni che **non sono inc
 * **Metodo automatico (Consigliato)**: Posiziona l'app, avviala, vai sulla scheda **Strumenti** e clicca su *"Scarica e installa in bin"* per automatizzare il recupero dei file supportati.
 * **Metodo manuale**: Crea una cartella denominata `bin` nella stessa directory di `TAPPO.py` e inserisci gli eseguibili necessari. Su Linux è possibile installarli anche tramite i gestori di pacchetti di sistema (`apt`, `dnf`, `pacman`).
 
----
-
 ## Requisiti e Dipendenze
 
 * **Python 3.x** (consigliato Python 3.8 o superiore).
 * **Dipendenze Python obbligatorie**: *Nessuna* (utilizza esclusivamente moduli nativi della libreria standard di Python).
 * **Dipendenza Python opzionale**: 
   * `Pillow` (`pip install pillow`): vivamente consigliata per abilitare anteprime PNG ridimensionate con algoritmi di interpolazione di qualità superiore (LANCZOS). Senza Pillow, l'app utilizzerà le funzioni native di `tkinter`.
-
----
 
 ## Avvio dell'Applicazione
 
