@@ -1,7 +1,7 @@
-# 🇮🇹TAPPO
+# 🇮🇹 TAPPO
 **Tool per Alleggerire Pdf e Png Offline**
 
-**[Italiano](#TAPPO)** | **[English](#TAPPO (English))**
+**[Italiano](#🇮🇹 TAPPO)** | **[English](#🇬🇧 TAPPO)**
 
 **TAPPO** è un'applicazione desktop scritta in Python con interfaccia `tkinter`, progettata per comprimere immagini **PNG** e documenti **PDF** in modo completamente **offline**, sfruttando la massima efficienza di strumenti CLI consolidati nel mondo open source.
 
@@ -57,7 +57,7 @@ Questo progetto è distribuito sotto licenza MIT. Gli strumenti esterni utilizza
 
 ---
 
-# 🇬🇧TAPPO
+# 🇬🇧 TAPPO
 **Offline PDF and PNG Compression Tool**
 
 **TAPPO** is a desktop application written in Python using `tkinter`, designed to compress **PNG** images and **PDF** documents completely **offline**, leveraging the performance of battle-tested open-source CLI tools.
