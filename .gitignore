@@ -1,8 +1,33 @@
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Python build artifacts
 build/
 dist/
-venv/
-build_venv/
-__pycache__/
-tappo_env/
-__pycache__/
-*.pyc
+*.egg-info/
+
+# IDE and editors
+.vscode/
+.idea/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~
+
+# Logs
+*.log
