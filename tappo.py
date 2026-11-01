@@ -1,27 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-TAPPO - Tool per Alleggerire Pdf e Png Offline
-==============================================
-
-Applicazione tkinter che comprime PNG e PDF usando eseguibili esterni:
-
-  * oxipng      -> compressione PNG lossless (con opzione Zopfli)
-  * pngquant    -> compressione PNG lossy
-  * ghostscript -> compressione PDF
-
-Gli eseguibili vanno messi nella cartella "bin" accanto a questo file
-(oppure installati nel sistema: vengono cercati anche nel PATH).
-
-Dipendenze Python: nessuna obbligatoria.
-Opzionale: Pillow (pip install pillow) per anteprime ridimensionate con
-qualità migliore. Senza Pillow l'anteprima usa solo tkinter.
-
-Avvio:   python3 tappo.py     (Linux)
-         python tappo.py      (Windows)
-
-Gli eseguibili esterni NON sono inclusi e mantengono le loro licenze.
-"""
 
 import math
 import os
@@ -43,25 +20,20 @@ import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 import tkinter.font as tkfont
 
-try:  # opzionale
+try:
     from PIL import Image, ImageTk
     _RES = getattr(Image, "Resampling", Image)
     HAVE_PIL = True
-except Exception:  # noqa
+except Exception:
     HAVE_PIL = False
 
 APP_NAME = "TAPPO"
 APP_FULL = "Tool per Alleggerire Pdf e Png Offline"
-APP_VERSION = "1.1.0"
 
 IS_WIN = os.name == "nt"
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 BIN_DIR = os.path.join(BASE_DIR, "bin")
 
-
-# ============================================================================
-#  CONFIGURAZIONE ESTETICA  -  modifica qui colori e dimensioni dei testi
-# ============================================================================
 
 # --- Palette Flexoki (https://stephango.com/flexoki): i soli colori usati dall'app
 FLEXOKI = {
@@ -161,24 +133,15 @@ COLORI = {
     "progress":              F["blue-600"],
     "progress_sfondo":       F["base-150"],
 }
-C = COLORI  # abbreviazione
+C = COLORI
 
-# --- Dimensione iniziale della finestra (pixel)
 WINDOW_WIDTH = 1200
 WINDOW_HEIGHT = 960
 
-# --- Dimensioni dei testi (in punti): l'intera app usa solo queste tre
 FONT_SIZES = {"small": 9, "normal": 10, "large": 12}
 
-# --- Ultima versione di pngquant con eseguibile per Windows disponibile su pngquant.org.
-#     (la 3.x esiste solo per Linux/macOS). Aggiornala a mano se pngquant.org
-#     pubblica un nuovo exe per Windows.
 PNGQUANT_WIN_LATEST = (2, 17, 0)
 
-
-# ----------------------------------------------------------------------------
-# Definizione degli strumenti esterni
-# ----------------------------------------------------------------------------
 
 TOOLS = {
     "oxipng": {
@@ -276,7 +239,7 @@ PNG_PRESETS = {
     "Lossy - estremo (pngquant 20-45)": {"mode": "lossy", "qmin": 20, "qmax": 45, "speed": 3},
 }
 DEFAULT_PNG_PRESET = "Lossless - standard (oxipng -o3)"
-POST_OXIPNG_LEVEL = 3  # livello oxipng usato dopo pngquant
+POST_OXIPNG_LEVEL = 3
 
 PDF_PRESETS = [
     ("screen", "screen   -  72 dpi: file più piccolo, qualità bassa (solo lettura a schermo)"),
@@ -286,27 +249,20 @@ PDF_PRESETS = [
 ]
 
 
-# ----------------------------------------------------------------------------
-# HiDPI e utilità
-# ----------------------------------------------------------------------------
-
 def enable_hidpi():
-    """Su Windows evita che il sistema ingrandisca (e sfochi) la finestra."""
     if sys.platform != "win32":
         return
     import ctypes
     try:
-        ctypes.windll.shcore.SetProcessDpiAwareness(1)  # Windows 8.1 e successivi
+        ctypes.windll.shcore.SetProcessDpiAwareness(1)
     except Exception:
         try:
-            ctypes.windll.user32.SetProcessDPIAware()  # fallback per Windows più vecchi
+            ctypes.windll.user32.SetProcessDPIAware()
         except Exception:
             pass
 
 
 def set_windows_app_id():
-    """Su Windows, lanciando da python.exe, dà all'app una propria identità nella barra
-    delle applicazioni (altrimenti viene raggruppata sotto l'icona di Python)."""
     if sys.platform != "win32":
         return
     try:
@@ -317,10 +273,6 @@ def set_windows_app_id():
 
 
 def apply_windows_icon_sizes(root, ico_path, warn):
-    """Windows: Tk con iconbitmap usa una sola dimensione dell'icona e la ridimensiona
-    (risultato sfuocato sugli schermi ad alta risoluzione). Qui chiediamo a Windows di
-    scegliere dal file .ico il formato esatto per la barra del titolo (piccola) e per la
-    barra delle applicazioni (grande), in base alla scala dello schermo."""
     try:
         import ctypes
         from ctypes import wintypes
@@ -338,7 +290,7 @@ def apply_windows_icon_sizes(root, ico_path, warn):
         hwnd = user32.GetParent(child) or child
         try:
             dpi = user32.GetDpiForWindow(hwnd) or 96
-        except AttributeError:  # Windows precedenti a 10 (1607)
+        except AttributeError:
             dpi = 96
 
         def metric(index):
@@ -356,15 +308,11 @@ def apply_windows_icon_sizes(root, ico_path, warn):
                 user32.SendMessageW(hwnd, WM_SETICON, which, handle)
             else:
                 warn(f"Windows non riesce a caricare l'icona da {size}x{size} px")
-    except Exception as e:  # noqa
+    except Exception as e:
         warn(f"impossibile impostare le dimensioni dell'icona: {e}")
 
 
 def set_app_icon(root):
-    """Imposta l'icona della finestra. Cerca accanto a tappo.py:
-         tappo.ico  (solo Windows, consigliata: contiene più dimensioni)
-         tappo.png  (Windows e Linux, almeno 256x256)
-    Se qualcosa non va, il motivo viene scritto sul terminale (stderr)."""
     def warn(msg):
         print(f"[tappo] icona: {msg}", file=sys.stderr)
 
@@ -384,9 +332,9 @@ def set_app_icon(root):
                      "va convertito con un programma che esporta in formato ICO")
             else:
                 try:
-                    root.iconbitmap(default=ico)  # finestre di dialogo
-                    root.iconbitmap(ico)          # finestra principale e barra delle applicazioni
-                    apply_windows_icon_sizes(root, ico, warn)  # dimensioni nitide per questo schermo
+                    root.iconbitmap(default=ico)
+                    root.iconbitmap(ico)
+                    apply_windows_icon_sizes(root, ico, warn)
                     done = True
                 except tk.TclError as e:
                     warn(f"Tk non riesce a leggere tappo.ico: {e}")
@@ -403,21 +351,19 @@ def set_app_icon(root):
                 try:
                     img = tk.PhotoImage(file=png)
                     root.iconphoto(True, img)
-                    root._icon_ref = img  # evita la garbage collection
+                    root._icon_ref = img
                 except tk.TclError as e:
                     warn(f"Tk non riesce a leggere tappo.png: {e}")
 
 
-UI_SCALE = 1.0  # fattore di scala rispetto a 96 dpi, impostato all'avvio
+UI_SCALE = 1.0
 
 
 def sc(n):
-    """Scala un valore in pixel in base al DPI dello schermo."""
     return int(round(n * UI_SCALE))
 
 
 def mono_font(master):
-    """Sceglie un font monospace moderno tra quelli installati (mai Courier New)."""
     preferred = ["Consolas", "Cascadia Mono", "Cascadia Code", "DejaVu Sans Mono", "Liberation Mono",
                  "Ubuntu Mono", "Noto Sans Mono", "Menlo", "Monaco", "Lucida Console"]
     installed = set(tkfont.families(master))
@@ -437,14 +383,13 @@ def hsize(n):
 def run(cmd, timeout=600):
     kw = {}
     if IS_WIN:
-        kw["creationflags"] = 0x08000000  # CREATE_NO_WINDOW
+        kw["creationflags"] = 0x08000000
     return subprocess.run(
         cmd, capture_output=True, text=True, errors="replace", timeout=timeout, **kw
     )
 
 
 def find_binary(key):
-    """Cerca l'eseguibile: prima in ./bin, poi nel PATH, poi (Windows) in Program Files."""
     names = TOOLS[key]["names"]
     for name in names:
         p = os.path.join(BIN_DIR, name)
@@ -480,7 +425,6 @@ def parse_version(text):
 
 
 def parse_gs_tag(tag):
-    """'gs10050' -> (10, 5, 0);  'gs9561' -> (9, 56, 1)"""
     m = re.match(r"^gs(\d+)$", tag or "")
     if not m:
         return None
@@ -496,35 +440,29 @@ def fmt_version(v):
 
 def fetch_json(url):
     req = urllib.request.Request(
-        url, headers={"User-Agent": f"{APP_NAME}/{APP_VERSION}", "Accept": "application/json"}
+        url, headers={"User-Agent": APP_NAME, "Accept": "application/json"}
     )
     with urllib.request.urlopen(req, timeout=8) as r:
         return json.loads(r.read().decode("utf-8"))
 
 
 def latest_version(key):
-    """Ultima versione DISPONIBILE PER IL SISTEMA OPERATIVO IN USO."""
     if key == "oxipng":
         data = fetch_json("https://api.github.com/repos/oxipng/oxipng/releases/latest")
         return parse_version(data.get("tag_name", ""))
     if key == "pngquant":
         if IS_WIN:
-            # Il codice sorgente è alla 3.x ma l'exe per Windows sul sito ufficiale è fermo
-            # alla 2.17: nessun controllo online, si usa la costante PNGQUANT_WIN_LATEST.
             return PNGQUANT_WIN_LATEST
         data = fetch_json("https://api.github.com/repos/kornelski/pngquant/tags")
         versions = [parse_version(t.get("name", "")) for t in data]
         versions = [v for v in versions if v]
         return max(versions) if versions else None
-    if key == "ghostscript":
-        data = fetch_json("https://api.github.com/repos/ArtifexSoftware/ghostpdl-downloads/releases/latest")
-        return parse_gs_tag(data.get("tag_name", ""))
-    return None
+    data = fetch_json("https://api.github.com/repos/ArtifexSoftware/ghostpdl-downloads/releases/latest")
+    return parse_gs_tag(data.get("tag_name", ""))
 
 
 def check_tool(key):
-    """Restituisce un dict con percorso, versione installata e ultima versione online."""
-    res = {"path": find_binary(key), "installed": None, "latest": None, "online_error": None}
+    res = {"path": find_binary(key), "installed": None, "latest": None}
     if res["path"]:
         try:
             r = run([res["path"], "--version"], timeout=20)
@@ -533,13 +471,12 @@ def check_tool(key):
             pass
     try:
         res["latest"] = latest_version(key)
-    except Exception as e:
-        res["online_error"] = str(e)
+    except Exception:
+        pass
     return res
 
 
 def tool_status(info):
-    """Restituisce (testo, 'ok'|'warn'|'neutral')."""
     if not info["path"]:
         return "NON TROVATO", "warn"
     if info["latest"] is None:
@@ -551,17 +488,11 @@ def tool_status(info):
     return "Aggiornato", "ok"
 
 
-# ----------------------------------------------------------------------------
-# Download e installazione automatica degli eseguibili nella cartella bin
-# ----------------------------------------------------------------------------
-
-INSTALLER_DIR = os.path.join(BIN_DIR, "_installer")  # dove viene salvato l'installer di Ghostscript
+INSTALLER_DIR = os.path.join(BIN_DIR, "_installer")
 IS_ARM = platform.machine().lower() in ("aarch64", "arm64")
 
 
 class ManualInstall(Exception):
-    """Per questo strumento e questo sistema non esiste un binario ufficiale scaricabile:
-    va installato con il gestore pacchetti."""
 
     def __init__(self, packages):
         super().__init__(", ".join(packages))
@@ -569,7 +500,7 @@ class ManualInstall(Exception):
 
 
 def http_download(url, dest, log, label):
-    req = urllib.request.Request(url, headers={"User-Agent": f"{APP_NAME}/{APP_VERSION}"})
+    req = urllib.request.Request(url, headers={"User-Agent": APP_NAME})
     with urllib.request.urlopen(req, timeout=30) as r, open(dest, "wb") as f:
         total = int(r.headers.get("Content-Length") or 0)
         done = 0
@@ -588,7 +519,6 @@ def http_download(url, dest, log, label):
 
 
 def github_asset(repo, patterns):
-    """Cerca nella release più recente il primo file che corrisponde a uno dei pattern (regex)."""
     data = fetch_json(f"https://api.github.com/repos/{repo}/releases/latest")
     for pat in patterns:
         for a in data.get("assets", []):
@@ -598,7 +528,6 @@ def github_asset(repo, patterns):
 
 
 def extract_files(archive, want, dest_dir):
-    """Estrae dall'archivio (zip o tar.gz), senza sottocartelle, i file per cui want(nome) è vero."""
     os.makedirs(dest_dir, exist_ok=True)
     extracted = []
 
@@ -607,7 +536,7 @@ def extract_files(archive, want, dest_dir):
         tmp_target = target + ".new"
         with open(tmp_target, "wb") as out:
             shutil.copyfileobj(fileobj, out)
-        os.replace(tmp_target, target)  # sostituisce la vecchia versione
+        os.replace(tmp_target, target)
         if not IS_WIN:
             os.chmod(target, 0o755)
         extracted.append(target)
@@ -655,7 +584,6 @@ def install_oxipng(log, tmp):
 
 def install_pngquant(log, tmp):
     if not IS_WIN:
-        # pngquant non pubblica binari ufficiali per Linux (solo codice sorgente)
         raise ManualInstall(["pngquant"])
     archive = os.path.join(tmp, "pngquant-windows.zip")
     http_download("https://pngquant.org/pngquant-windows.zip", archive, log, "pngquant")
@@ -668,14 +596,13 @@ def install_pngquant(log, tmp):
 
 def install_ghostscript(log, tmp):
     if not IS_WIN:
-        # Artifex non pubblica binari ufficiali recenti per Linux (solo sorgenti)
         raise ManualInstall(["ghostscript"])
     name, url = github_asset("ArtifexSoftware/ghostpdl-downloads", [r"^gs\d+w64\.exe$"])
     os.makedirs(INSTALLER_DIR, exist_ok=True)
     dest = os.path.join(INSTALLER_DIR, name)
     http_download(url, dest, log, "Ghostscript")
     log("Ghostscript: avvio installer…")
-    os.startfile(dest)  # noqa  (installer ufficiale: richiede conferma di Windows)
+    os.startfile(dest)
     return ("Installer di Ghostscript scaricato e avviato: completa l'installazione, "
             "poi premi 'Ricontrolla aggiornamenti'. TAPPO lo troverà da solo.")
 
@@ -684,7 +611,6 @@ INSTALLERS = {"oxipng": install_oxipng, "pngquant": install_pngquant, "ghostscri
 
 
 def linux_install_command(packages):
-    """Comando del gestore pacchetti adatto alla distribuzione in uso (o None)."""
     ids = set()
     try:
         with open("/etc/os-release", encoding="utf-8") as f:
@@ -705,11 +631,7 @@ def linux_install_command(packages):
     return None
 
 
-# ----------------------------------------------------------------------------
-# Wrapper dei programmi esterni
-# ----------------------------------------------------------------------------
-
-def run_oxipng(exe, src, dst, level, strip, zopfli=False):
+def run_oxipng(exe, src, dst, level, strip, zopfli):
     cmd = [exe, "-o", str(level), "--out", dst, "-q"]
     if strip:
         cmd += ["--strip", "safe"]
@@ -719,7 +641,7 @@ def run_oxipng(exe, src, dst, level, strip, zopfli=False):
     r = run(cmd, timeout=3600 if zopfli else 600)
     if r.returncode != 0:
         raise RuntimeError("oxipng ha restituito un errore:\n" + (r.stderr or r.stdout or "").strip())
-    if not os.path.exists(dst):  # nessun miglioramento: oxipng non scrive il file
+    if not os.path.exists(dst):
         shutil.copyfile(src, dst)
 
 
@@ -748,6 +670,24 @@ def run_ghostscript(exe, src, dst, setting):
         raise RuntimeError("Ghostscript ha restituito un errore:\n" + (r.stderr or r.stdout or "").strip())
 
 
+def save_result(out, src, title, ext, label):
+    if not out or not os.path.exists(out):
+        return
+    stem = os.path.splitext(os.path.basename(src))[0]
+    dst = filedialog.asksaveasfilename(
+        title=title, defaultextension=ext,
+        initialdir=os.path.dirname(src), initialfile=f"{stem}_tappo{ext}",
+        filetypes=[(label, f"*{ext}")],
+    )
+    if not dst:
+        return
+    try:
+        shutil.copyfile(out, dst)
+        messagebox.showinfo(APP_NAME, f"File salvato:\n{dst}")
+    except OSError as e:
+        messagebox.showerror(APP_NAME, f"Impossibile salvare il file:\n{e}")
+
+
 def result_text(orig, new):
     saved = orig - new
     pct = (saved / orig * 100) if orig else 0
@@ -757,10 +697,6 @@ def result_text(orig, new):
     return (f"Originale: {hsize(orig)}  →  Compresso: {hsize(new)}   |   "
             f"Nessun risparmio (+{hsize(-saved)}): conviene tenere l'originale"), C["errore"]
 
-
-# ----------------------------------------------------------------------------
-# Scheda PNG
-# ----------------------------------------------------------------------------
 
 class PngTab(ttk.Frame):
     def __init__(self, master, app):
@@ -773,14 +709,13 @@ class PngTab(ttk.Frame):
         self._redraw_job = None
         self._cache = {}
         self._refs = {}
-        self.fit_mode = True  # True = adatta al box; False = 100% (se ci sta)
+        self.fit_mode = True
 
         self.preset = tk.StringVar(value=DEFAULT_PNG_PRESET)
         self.strip = tk.BooleanVar(value=True)
         self.post = tk.BooleanVar(value=False)
         self.zopfli = tk.BooleanVar(value=False)
 
-        # --- barra superiore: Apri a sinistra, Salva con nome a destra
         top = ttk.Frame(self)
         top.pack(fill="x")
         ttk.Button(top, text="Apri PNG…", style="Primary.TButton", command=self.open_file).pack(side="left")
@@ -790,7 +725,6 @@ class PngTab(ttk.Frame):
                                    command=self.save_as, state="disabled")
         self.btn_save.pack(side="right")
 
-        # --- controlli
         box = ttk.LabelFrame(self, text="Compressione", padding=8)
         box.pack(fill="x", pady=8)
 
@@ -812,7 +746,6 @@ class PngTab(ttk.Frame):
                                           variable=self.zopfli, command=self.options_changed)
         self.chk_zopfli.pack(side="left")
 
-        # --- barra zoom
         zb = ttk.Frame(self)
         zb.pack(fill="x", pady=(0, 4))
         ttk.Label(zb, text="Anteprima:").pack(side="left")
@@ -821,7 +754,6 @@ class PngTab(ttk.Frame):
         self.lbl_zoom = ttk.Label(zb, text="", font=app.fonts["small"], foreground=C["testo_secondario"])
         self.lbl_zoom.pack(side="left", padx=12)
 
-        # --- anteprima affiancata
         panes = ttk.Frame(self)
         panes.pack(fill="both", expand=True)
         panes.columnconfigure(0, weight=1, uniform="p")
@@ -840,17 +772,13 @@ class PngTab(ttk.Frame):
         self.cv_left.bind("<Configure>", self.schedule_redraw)
         self.cv_right.bind("<Configure>", self.schedule_redraw)
 
-        # --- barra inferiore: risultato
         self.lbl_info = ttk.Label(self, text="Apri un file PNG per iniziare.", anchor="w",
                                   font=app.fonts["normal_bold"], foreground=C["testo_secondario"])
         self.lbl_info.pack(fill="x", pady=(8, 0))
 
         self.update_option_states()
 
-    # --- gestione opzioni
     def update_option_states(self):
-        """'Poi ottimizza con oxipng' ha senso solo con i preset lossy;
-        Zopfli agisce solo quando oxipng viene eseguito."""
         lossy = PNG_PRESETS[self.preset.get()]["mode"] == "lossy"
         self.chk_post.config(state="normal" if lossy else "disabled")
         oxipng_runs = (not lossy) or self.post.get()
@@ -867,7 +795,6 @@ class PngTab(ttk.Frame):
             self.after_cancel(self._job)
         self._job = self.after(400, self.compress)
 
-    # --- file
     def open_file(self):
         path = filedialog.askopenfilename(title="Apri PNG", filetypes=[("Immagini PNG", "*.png"), ("Tutti i file", "*.*")])
         if not path:
@@ -925,7 +852,7 @@ class PngTab(ttk.Frame):
 
         def done(res, err):
             if g != self.gen:
-                return  # risultato obsoleto
+                return
             if err:
                 self.out = None
                 self.set_info(str(err).splitlines()[0] if str(err) else "Errore", C["errore"])
@@ -945,23 +872,8 @@ class PngTab(ttk.Frame):
         self.lbl_info.config(text=text, foreground=color)
 
     def save_as(self):
-        if not self.out or not os.path.exists(self.out):
-            return
-        stem = os.path.splitext(os.path.basename(self.src))[0]
-        dst = filedialog.asksaveasfilename(
-            title="Salva PNG compresso", defaultextension=".png",
-            initialdir=os.path.dirname(self.src), initialfile=f"{stem}_tappo.png",
-            filetypes=[("Immagini PNG", "*.png")],
-        )
-        if not dst:
-            return
-        try:
-            shutil.copyfile(self.out, dst)
-            messagebox.showinfo(APP_NAME, f"File salvato:\n{dst}")
-        except OSError as e:
-            messagebox.showerror(APP_NAME, f"Impossibile salvare il file:\n{e}")
+        save_result(self.out, self.src, "Salva PNG compresso", ".png", "Immagini PNG")
 
-    # --- anteprima
     def set_zoom(self, fit):
         self.fit_mode = fit
         self.draw_all()
@@ -992,12 +904,11 @@ class PngTab(ttk.Frame):
                 except Exception:
                     entry = None
             if entry is None:
-                entry = ("tk", tk.PhotoImage(file=path))  # può sollevare TclError
+                entry = ("tk", tk.PhotoImage(file=path))
             self._cache[key] = entry
         return entry
 
     def _render(self, path, cw, ch):
-        """Restituisce (immagine tk, larghezza, altezza, scala effettiva)."""
         kind, obj = self._load(path)
         iw, ih = obj.size if kind == "pil" else (obj.width(), obj.height())
         fit = min(cw / iw, ch / ih)
@@ -1009,7 +920,6 @@ class PngTab(ttk.Frame):
                 size = (max(1, int(iw * scale)), max(1, int(ih * scale)))
                 im2 = obj.resize(size, _RES.NEAREST if scale > 1 else _RES.LANCZOS)
             return ImageTk.PhotoImage(im2), iw, ih, scale
-        # Senza Pillow: solo fattori interi (zoom / subsample)
         if scale >= 1:
             z = max(1, int(scale))
             return (obj.zoom(z, z) if z > 1 else obj), iw, ih, float(z)
@@ -1025,7 +935,7 @@ class PngTab(ttk.Frame):
             return
         try:
             img, iw, ih, scale = self._render(path, cw, ch)
-            self._refs[tag] = img  # evita la garbage collection
+            self._refs[tag] = img
             cv.create_image(cv.winfo_width() // 2, cv.winfo_height() // 2, image=img)
             cv.create_text(8, 8, anchor="nw", fill=C["anteprima_testo"], font=self.app.fonts["small"],
                            text=f"{iw}×{ih} px  -  zoom {scale * 100:.0f}%")
@@ -1040,10 +950,6 @@ class PngTab(ttk.Frame):
             cv.create_text(cw // 2, ch // 2, fill=C["anteprima_testo"], font=self.app.fonts["small"],
                            text="Anteprima non disponibile per questo PNG\n(il file può comunque essere salvato)")
 
-
-# ----------------------------------------------------------------------------
-# Scheda PDF
-# ----------------------------------------------------------------------------
 
 class PdfTab(ttk.Frame):
     def __init__(self, master, app):
@@ -1131,26 +1037,8 @@ class PdfTab(ttk.Frame):
         self.app.run_bg(work, done)
 
     def save_as(self):
-        if not self.out or not os.path.exists(self.out):
-            return
-        stem = os.path.splitext(os.path.basename(self.src))[0]
-        dst = filedialog.asksaveasfilename(
-            title="Salva PDF compresso", defaultextension=".pdf",
-            initialdir=os.path.dirname(self.src), initialfile=f"{stem}_tappo.pdf",
-            filetypes=[("Documenti PDF", "*.pdf")],
-        )
-        if not dst:
-            return
-        try:
-            shutil.copyfile(self.out, dst)
-            messagebox.showinfo(APP_NAME, f"File salvato:\n{dst}")
-        except OSError as e:
-            messagebox.showerror(APP_NAME, f"Impossibile salvare il file:\n{e}")
+        save_result(self.out, self.src, "Salva PDF compresso", ".pdf", "Documenti PDF")
 
-
-# ----------------------------------------------------------------------------
-# Scheda Strumenti (stato, aggiornamenti, istruzioni di installazione)
-# ----------------------------------------------------------------------------
 
 class ToolsTab(ttk.Frame):
     def __init__(self, master, app):
@@ -1181,7 +1069,7 @@ class ToolsTab(ttk.Frame):
         btns = ttk.Frame(self)
         btns.pack(fill="x", pady=8)
         ttk.Button(btns, text="Ricontrolla aggiornamenti", style="Primary.TButton",
-                   command=lambda: app.check_updates(manual=True)).pack(side="left")
+                   command=app.check_updates).pack(side="left")
         self.btn_install = ttk.Button(btns, text="Scarica e installa in bin", style="Primary.TButton",
                                       command=self.install_all)
         self.btn_install.pack(side="left", padx=6)
@@ -1190,8 +1078,7 @@ class ToolsTab(ttk.Frame):
         ttk.Button(btns, text="Apri cartella bin", style="Primary.TButton",
                    command=self.open_bin).pack(side="left", padx=6)
 
-        self.mono = mono_font(self)
-        self.txt = tk.Text(self, height=14, wrap="word", state="disabled", font=self.mono,
+        self.txt = tk.Text(self, height=14, wrap="word", state="disabled", font=mono_font(self),
                            bg=C["sfondo_istruzioni"], fg=C["testo"],
                            selectbackground=C["selezione"], selectforeground=C["selezione_testo"],
                            highlightthickness=1, highlightbackground=C["linea"], relief="flat",
@@ -1206,15 +1093,13 @@ class ToolsTab(ttk.Frame):
 
     def mark_checking(self):
         for k in TOOLS:
-            self.tree.set(k, "stato", "Controllo in corso…")
-            self.tree.item(k, tags=())
+            self.set_row_status(k, "Controllo in corso…")
 
     def set_row_status(self, key, text):
         self.tree.set(key, "stato", text)
         self.tree.item(key, tags=())
 
     def install_all(self):
-        """Scarica nella cartella bin gli strumenti mancanti o non aggiornati."""
         results = self.app.check_results
         if results:
             targets = [k for k in TOOLS if tool_status(results[k])[1] != "ok"]
@@ -1237,13 +1122,13 @@ class ToolsTab(ttk.Frame):
                     outcome[k] = ("ok", INSTALLERS[k](log, tmp))
                 except ManualInstall as e:
                     outcome[k] = ("manual", e.packages)
-                except Exception as e:  # noqa
+                except Exception as e:
                     outcome[k] = ("err", str(e))
             return outcome
 
         def done(outcome, err):
             self.btn_install.config(state="normal")
-            self.app.check_updates()  # aggiorna la tabella
+            self.app.check_updates()
             if err or not outcome:
                 messagebox.showerror(APP_NAME, f"Operazione non riuscita:\n{err}")
                 return
@@ -1301,7 +1186,7 @@ class ToolsTab(ttk.Frame):
         os.makedirs(BIN_DIR, exist_ok=True)
         try:
             if IS_WIN:
-                os.startfile(BIN_DIR)  # noqa
+                os.startfile(BIN_DIR)
             elif sys.platform == "darwin":
                 subprocess.Popen(["open", BIN_DIR])
             else:
@@ -1310,21 +1195,12 @@ class ToolsTab(ttk.Frame):
             messagebox.showinfo(APP_NAME, f"Cartella bin:\n{BIN_DIR}\n\n({e})")
 
 
-# ----------------------------------------------------------------------------
-# Applicazione
-# ----------------------------------------------------------------------------
-
 class App(tk.Tk):
-    TAB_PAD = None  # impostato in __init__ (dipende dalla scala)
-
     def __init__(self):
         super().__init__()
         global UI_SCALE
-        # tk scaling = pixel per punto; 96 dpi corrisponde a 96/72
         UI_SCALE = max(1.0, float(self.tk.call("tk", "scaling")) * 72.0 / 96.0)
         self.title(f"{APP_NAME} - {APP_FULL}")
-        # dimensione iniziale ESATTA in pixel reali (non scalata); ridimensionabile dopo.
-        # Si riduce solo se lo schermo è più piccolo, per non uscire dallo schermo.
         w = min(WINDOW_WIDTH, self.winfo_screenwidth())
         h = min(WINDOW_HEIGHT, self.winfo_screenheight())
         self.geometry(f"{w}x{h}")
@@ -1336,27 +1212,26 @@ class App(tk.Tk):
         self._q = queue.Queue()
         self.check_results = {}
 
-        App.TAB_PAD = [sc(16), sc(6)]
+        self.tab_pad = [sc(16), sc(6)]
         self.setup_fonts()
         self.setup_style()
 
         self.nb = ttk.Notebook(self)
         self.nb.pack(fill="both", expand=True)
-        self.tab_png = PngTab(self.nb, self)
-        self.tab_pdf = PdfTab(self.nb, self)
+        tab_png = PngTab(self.nb, self)
+        tab_pdf = PdfTab(self.nb, self)
         self.tab_tools = ToolsTab(self.nb, self)
         labels = self.equal_width_labels(["PNG", "PDF", "Strumenti"])
-        self.nb.add(self.tab_png, text=labels[0])
-        self.nb.add(self.tab_pdf, text=labels[1])
+        self.nb.add(tab_png, text=labels[0])
+        self.nb.add(tab_pdf, text=labels[1])
         self.nb.add(self.tab_tools, text=labels[2])
         self.nb.bind("<<NotebookTabChanged>>", self.on_tab_changed)
         self.on_tab_changed()
 
         self.protocol("WM_DELETE_WINDOW", self.on_close)
         self.after(100, self._poll)
-        self.after(300, lambda: self.check_updates(manual=False))
+        self.after(300, self.check_updates)
 
-    # --- font: l'app usa solo tre dimensioni (small, normal, large)
     def setup_fonts(self):
         for name in ("TkDefaultFont", "TkTextFont", "TkMenuFont", "TkHeadingFont", "TkCaptionFont",
                      "TkSmallCaptionFont", "TkIconFont", "TkTooltipFont", "TkFixedFont"):
@@ -1372,19 +1247,17 @@ class App(tk.Tk):
         self.fonts = {
             "small": mk("small"),
             "normal": mk("normal"),
-            "large": mk("large"),
             "normal_bold": mk("normal", "bold"),
             "large_bold": mk("large", "bold"),
         }
 
     def equal_width_labels(self, labels):
-        """Riempie con spazi i testi delle linguette perché abbiano la stessa larghezza."""
         f = self.fonts["large_bold"]
         target = max(f.measure(t) for t in labels)
         space = max(1, f.measure(" "))
         out = []
         for t in labels:
-            k = round((target - f.measure(t)) / space)  # spazi da aggiungere
+            k = round((target - f.measure(t)) / space)
             left = k // 2
             out.append(" " * left + t + " " * (k - left))
         return out
@@ -1432,12 +1305,10 @@ class App(tk.Tk):
                    lowerbordercolor=[("disabled", C["linea"])],
                    foreground=[("disabled", C["testo_disabilitato"])])
 
-        # riquadri
         st.configure("TLabelframe", background=C["sfondo_app"], bordercolor=C["linea"])
         st.configure("TLabelframe.Label", background=C["sfondo_app"], foreground=C["testo"],
                      font=fn["normal_bold"])
 
-        # tabella
         st.configure("Treeview", background=C["sfondo_campi"], fieldbackground=C["sfondo_campi"],
                      foreground=C["testo"], rowheight=sc(24), bordercolor=C["linea"], font=fn["normal"])
         st.map("Treeview", background=[("selected", C["selezione"])],
@@ -1446,11 +1317,9 @@ class App(tk.Tk):
                      foreground=C["tabella_intestazione_testo"], relief="flat", font=fn["normal_bold"],
                      padding=sc(4))
 
-        # barra di avanzamento
         st.configure("Horizontal.TProgressbar", background=C["progress"], troughcolor=C["progress_sfondo"],
                      bordercolor=C["linea"], lightcolor=C["progress"], darkcolor=C["progress"])
 
-        # pulsanti
         st.configure("TButton", padding=[sc(16), sc(8)], relief="flat", font=fn["normal_bold"])
         self._button_style("TButton", C["secondario"], C["secondario_hover"],
                            C["secondario_premuto"], C["secondario_testo"])
@@ -1459,12 +1328,11 @@ class App(tk.Tk):
         self._button_style("Save.TButton", C["salva"], C["salva_hover"],
                            C["salva_premuto"], C["testo_su_pulsante"])
 
-        # linguette: stessa dimensione sia attive sia inattive
         # (lightcolor/darkcolor = colore della linea: niente effetto rilievo, solo bordo piatto)
         st.configure("TNotebook", background=C["sfondo_app"], bordercolor=C["linea"],
                      lightcolor=C["linea"], darkcolor=C["linea"],
-                     tabmargins=[sc(4), sc(4), 0, 0], tabposition="n")  # "n" = linguette centrate
-        st.configure("TNotebook.Tab", font=fn["large_bold"], padding=self.TAB_PAD,
+                     tabmargins=[sc(4), sc(4), 0, 0], tabposition="n")
+        st.configure("TNotebook.Tab", font=fn["large_bold"], padding=self.tab_pad,
                      background=C["linguetta_inattiva"], foreground=C["linguetta_inattiva_testo"],
                      bordercolor=C["linea"], lightcolor=C["linea"], darkcolor=C["linea"])
 
@@ -1490,21 +1358,19 @@ class App(tk.Tk):
                        lightcolor=[("selected", C["linea"]), ("!selected", C["linea"])],
                        darkcolor=[("selected", C["linea"]), ("!selected", C["linea"])],
                        focuscolor=[("selected", color), ("!selected", C["linguetta_inattiva"])],
-                       padding=[("selected", self.TAB_PAD)],      # stessa misura da attiva
-                       expand=[("selected", [0, 0, 0, 0])])        # nessun ingrandimento da attiva
+                       padding=[("selected", self.tab_pad)],
+                       expand=[("selected", [0, 0, 0, 0])])
 
-    # --- esecuzione in background (thread) con ritorno sicuro nel thread della GUI
     def run_bg(self, work, done):
         def target():
             try:
                 res, err = work(), None
-            except Exception as e:  # noqa
+            except Exception as e:
                 res, err = None, e
             self._q.put((done, res, err))
         threading.Thread(target=target, daemon=True).start()
 
     def post_ui(self, fn):
-        """Esegue fn() nel thread della GUI (da usare dai thread in background)."""
         self._q.put((lambda res, err: fn(), None, None))
 
     def _poll(self):
@@ -1516,8 +1382,7 @@ class App(tk.Tk):
             pass
         self.after(100, self._poll)
 
-    # --- controllo aggiornamenti (il risultato si vede solo nella scheda Strumenti)
-    def check_updates(self, manual=False):
+    def check_updates(self):
         self.tab_tools.mark_checking()
 
         def work():
